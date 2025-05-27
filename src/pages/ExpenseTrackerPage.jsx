@@ -24,6 +24,11 @@ const ExpenseTrackerPage = () => {
     totalExpenes: 25,
   }
 
+  const newExpense = () => {
+    expenses
+    
+  }
+
   return (
     <div className="min-h-scren bg-gray-50 p-6">
         <div className='max-w-6xl mx-auto'>
@@ -31,7 +36,10 @@ const ExpenseTrackerPage = () => {
           <div className="flex justify-between items-center mb-8">
                 <h1 className='text-6xl'> Expense Tracker </h1>                
                 <div className="flex gap-2" id="buttons">
-                    <button className="bg-blue-500 rounded-full text-white cursor-pointer p-2">
+                    <button 
+                      className="bg-blue-500 rounded-full text-white cursor-pointer p-2"
+                      onClick={ () => newExpense ()  }
+                      >
                       <FiPlus className="w-8 h-8 cursor-pointer"/>
                     </button>
                     <button 
