@@ -29,6 +29,13 @@ const ExpenseTrackerPage = () => {
     
   }
 
+  const totalWeekExpense = expenses.reduce((totalExpense, currentExpense) => {
+    return totalExpense + currentExpense.amount
+  }, 0)
+
+  
+
+
   return (
     <div className="min-h-scren bg-gray-50 p-6">
         <div className='max-w-6xl mx-auto'>
@@ -55,7 +62,7 @@ const ExpenseTrackerPage = () => {
               
               <div className="bg-white p-4 rounded-lg shadow-md w-full">
                 <h2 className="text-xl font-semibold mb-2">Gasto Total</h2>
-                <p className="text-2xl text-green-600">$0.00</p>
+                <p className="text-2xl text-green-600">{totalWeekExpense}</p>
               </div>
 
               <div className="bg-white p-4 rounded-lg shadow-md w-full">
