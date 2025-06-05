@@ -7,15 +7,14 @@ const ExpenseTrackerPage = () => {
   const [isOpenSettings, setIsOpenSettings] = useState(false);
 
   const expenses = [
-    { id: 1, date: '2023-10-01', concept: 'Groceries', category: 'Food', amount: 50 },
-    { id: 2, date: '2023-10-02', concept: 'Utilities', category: 'Bills', amount: 100 },
-    { id: 3, date: '2023-10-03', concept: 'Transport', category: 'Travel', amount: 20 },
+    { id: 1, date: '2023-10-01', concept: 'Groceries', category: 'Food', amount: 20 },
+    { id: 2, date: '2023-10-02', concept: 'Utilities', category: 'Bills', amount: 10 },
+    { id: 3, date: '2023-10-03', concept: 'Transport', category: 'Travel', amount: 5 },
   ];
 
-  const sumarizeExpenses = {
-    total: 358,
-    weeklyLimit:500,
-    
+  
+  const settings = {
+    maxExpensePerWeek: 50
   }
 
   const pagination = {
@@ -33,8 +32,9 @@ const ExpenseTrackerPage = () => {
     return totalExpense + currentExpense.amount
   }, 0)
 
+  const progressPercentaje = totalWeekExpense / settings.maxExpensePerWeek > 1 ? 1 : totalWeekExpense / settings.maxExpensePerWeek
   
-
+  console.log( 'progressPercentaje ', progressPercentaje)
 
   return (
     <div className="min-h-scren bg-gray-50 p-6">
@@ -62,19 +62,19 @@ const ExpenseTrackerPage = () => {
               
               <div className="bg-white p-4 rounded-lg shadow-md w-full">
                 <h2 className="text-xl font-semibold mb-2">Gasto Total</h2>
-                <p className="text-2xl text-green-600">{totalWeekExpense}</p>
+                <p className="text-2xl text-green-600">{totalWeekExpense} €</p>
               </div>
 
               <div className="bg-white p-4 rounded-lg shadow-md w-full">
                 <h2 className="text-xl font-semibold mb-2"> Limite semanal </h2>
-                <p className="text-2xl text-blue-600">$0.00</p>
+                <p className="text-2xl text-blue-600"> {settings.maxExpensePerWeek} € </p>
               </div>
 
               <div className="bg-white p-4 rounded-lg shadow-md w-full">
                 <h2 className="text-xl font-semibold mb-2"> Progreso </h2>
                   <div className='w-full bg-gray-200 rounded h-2.5'>                    		
                         <div className='bg-green-500 h-2.5 rounded'                         
-                        style={{ width: `${ sumarizeExpenses.total / sumarizeExpenses.weeklyLimit * 100}%` }}></div>				
+                        style={{ width: `${ progressPercentaje * 100}%` }}></div>				
 		                    </div>                  
               </div>            
           </div>
