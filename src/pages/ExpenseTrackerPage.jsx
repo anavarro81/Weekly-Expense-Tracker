@@ -1,16 +1,37 @@
-import { FiPlus, FiSettings, FiEdit2, FiTrash2, FiChevronLeft, FiChevronRight} from "react-icons/fi";
+import { FiPlus, FiSettings, FiEdit2, FiTrash2, FiChevronLeft, FiChevronRight, FiCheck, FiX} from "react-icons/fi";
 import { useState } from "react";
 import SettingsSideBar from './SettingsSideBar'
 
 const ExpenseTrackerPage = () => {
 
   const [isOpenSettings, setIsOpenSettings] = useState(false);
+  const [editExpenseId, setEditExpenseId] = useState(0);
+  const [expenses, setExpenses] = useState([
+    { id: 1, date: '2025-06-06', concept: 'Groceries', category: 'Food', amount: 20 },
+    { id: 2, date: '2025-06-06', concept: 'Utilities', category: 'Bills', amount: 10 },
+    { id: 3, date: '2025-06-06', concept: 'Transport', category: 'Travel', amount: 5 },
 
-  const expenses = [
-    { id: 1, date: '2023-10-01', concept: 'Groceries', category: 'Food', amount: 20 },
-    { id: 2, date: '2023-10-02', concept: 'Utilities', category: 'Bills', amount: 10 },
-    { id: 3, date: '2023-10-03', concept: 'Transport', category: 'Travel', amount: 5 },
-  ];
+  ])
+
+
+  
+  const categories = [
+    "Comida",
+    "Restaurantes",
+    "Compras",
+    "Otras"
+  ]
+
+
+  const editExpense = (id) => {    
+    setEditExpenseId(id)
+  }
+
+  const saveExpense = (expense) => {
+
+    console.log('datos del gasto ', expense)
+
+  }
 
   
   const settings = {
@@ -89,14 +110,50 @@ const ExpenseTrackerPage = () => {
                 {expenses &&
                   expenses.map((expense) => (
                     <tr key={expense.id}>
-                      <td className="px-6 py-4"> {expense.date} </td>
-                      <td> {expense.concept} </td>
-                      <td> {expense.category} </td>
-                      <td> {expense.amount} </td>
+                      {editExpenseId == expense.id ? <td className="px-6 py-4"> <input type="date" value={expense.date}/> </td>  : <td className="px-6 py-4"> {expense.date} </td> }
+                      {editExpenseId == expense.id ? <td>  <input class="border" type="input" placeholder={expense.concept} /> </td>   : <td> {expense.concept} </td> }
+                      
+                      {editExpenseId == expense.id ? 
+                        <td>  
+                          <select name="select">
+                            {categories.map((category) => (
+                              <option value={category}> {category} </option>
+                            ))}
+                          </select> 
+                        </td>  
+                        : <td> {expense.category} </td> 
+                      }                      
+                      
+                      {editExpenseId == expense.id ? <td > <input type="number" className="border" placeholder={expense.amount}/> </td>  : <td> {expense.amount} </td> }                     
+                      
                       <td className=""> 
                         <div className="flex space-x-2">
-                          <FiEdit2 className="text-blue-500 w-5 h-5"/> 
+                          {editExpenseId != expense.id ?
+                          <> 
+                          <button
+                            onClick={() => editExpense(expense.id)}
+                          >
+                            <FiEdit2 
+                            className="text-blue-500 w-5 h-5"/> 
+                          </button>
                           <FiTrash2 className="text-red-500 w-5 h-5"/>
+                          
+                        </>
+                        :  
+                        <> 
+                          <button
+                            onClick={() => saveExpense(expense)}
+                          >
+                            <FiCheck 
+                            className="text-green-500 w-5 h-5"/> 
+                          </button>
+                          <FiX className="text-red-500 w-5 h-5"/>
+                          
+                        </>
+
+                      
+                      }
+                        
                         </div>
                       </td>
                       
