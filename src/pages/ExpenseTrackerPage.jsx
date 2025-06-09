@@ -30,7 +30,8 @@ const ExpenseTrackerPage = () => {
   const editExpense = (id) => {    
     setEditExpenseId(id)
     const currentExpense = expenses.find(expense => expense.id == id)
-    setEditExpenseId(currentExpense)
+    setEditedExpense(currentExpense)
+    
   }
 
   const deleteExpense = (id) => {    
@@ -51,6 +52,20 @@ const ExpenseTrackerPage = () => {
 
   const saveExpense = () => {    
     setEditExpenseId(null)   
+
+
+  }
+
+  const cancelEditExp = () => {    
+
+
+      setExpenses(expenses.map(expense => 
+      expense.id === editExpenseId 
+      ? editedExpense
+      : expense
+    ))
+    setEditExpenseId(null)
+    setEditedExpense(null)
 
 
   }
@@ -186,7 +201,7 @@ const ExpenseTrackerPage = () => {
                             className="text-green-500 w-5 h-5"/> 
                           </button>
                           <button 
-                          
+                            onClick={() => cancelEditExp()}
                           >
                           
                           <FiX className="text-red-500 w-5 h-5"/>    
