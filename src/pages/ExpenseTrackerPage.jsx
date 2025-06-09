@@ -5,13 +5,17 @@ import SettingsSideBar from './SettingsSideBar'
 const ExpenseTrackerPage = () => {
 
   const [isOpenSettings, setIsOpenSettings] = useState(false);
-  const [editExpenseId, setEditExpenseId] = useState(0);
+  
+  const [editExpenseId, setEditExpenseId] = useState(null);
+  
   const [expenses, setExpenses] = useState([
     { id: 1, date: '2025-06-06', concept: 'Groceries', category: 'Food', amount: 20 },
     { id: 2, date: '2025-06-06', concept: 'Utilities', category: 'Bills', amount: 10 },
     { id: 3, date: '2025-06-06', concept: 'Transport', category: 'Travel', amount: 5 },
 
   ])
+
+  const [editedExpense, setEditedExpense] = useState({})
 
 
   
@@ -25,11 +29,29 @@ const ExpenseTrackerPage = () => {
 
   const editExpense = (id) => {    
     setEditExpenseId(id)
+    const currentExpense = expenses.find(expense => expense.id == id)
+    setEditExpenseId(currentExpense)
   }
 
-  const saveExpense = (expense) => {
+  const deleteExpense = (id) => {    
+    const filteredExpenses = expenses.filter(expense => expense.id !== id )
+    setExpenses(filteredExpenses)
+    
+  }
 
-    console.log('datos del gasto ', expense)
+  const editExpendeData = (e) => {
+    const { name, value } = e.target;
+    
+    setExpenses(expenses.map(expense => 
+      expense.id === editExpenseId 
+      ? {...expense, [name]: value}
+      : expense
+    ))
+  }
+
+  const saveExpense = () => {    
+    setEditExpenseId(null)   
+
 
   }
 
@@ -55,7 +77,7 @@ const ExpenseTrackerPage = () => {
 
   const progressPercentaje = totalWeekExpense / settings.maxExpensePerWeek > 1 ? 1 : totalWeekExpense / settings.maxExpensePerWeek
   
-  console.log( 'progressPercentaje ', progressPercentaje)
+  
 
   return (
     <div className="min-h-scren bg-gray-50 p-6">
@@ -110,12 +132,20 @@ const ExpenseTrackerPage = () => {
                 {expenses &&
                   expenses.map((expense) => (
                     <tr key={expense.id}>
-                      {editExpenseId == expense.id ? <td className="px-6 py-4"> <input type="date" value={expense.date}/> </td>  : <td className="px-6 py-4"> {expense.date} </td> }
-                      {editExpenseId == expense.id ? <td>  <input class="border" type="input" placeholder={expense.concept} /> </td>   : <td> {expense.concept} </td> }
+                      
+                      {editExpenseId == expense.id 
+                        ? <td className="px-6 py-4"> <input type="date" name="date" value={expense.date} onChange={editExpendeData}/> </td>  
+                        : <td className="px-6 py-4"> {expense.date} </td> }                     
+                      
+                      {editExpenseId == expense.id 
+                        ? <td>  <input class="border" name="concept" type="input" placeholder={expense.concept} onChange={editExpendeData} /> </td>   
+                        : <td> {expense.concept} </td> }
                       
                       {editExpenseId == expense.id ? 
                         <td>  
-                          <select name="select">
+                          <select 
+                            name="category"
+                            onChange={editExpendeData}>
                             {categories.map((category) => (
                               <option value={category}> {category} </option>
                             ))}
@@ -124,7 +154,8 @@ const ExpenseTrackerPage = () => {
                         : <td> {expense.category} </td> 
                       }                      
                       
-                      {editExpenseId == expense.id ? <td > <input type="number" className="border" placeholder={expense.amount}/> </td>  : <td> {expense.amount} </td> }                     
+                      {editExpenseId == expense.id 
+                      ? <td > <input type="number" name="amount" className="border" onChange={editExpendeData} placeholder={expense.amount}/> </td>  : <td> {expense.amount} </td> }                     
                       
                       <td className=""> 
                         <div className="flex space-x-2">
@@ -136,7 +167,14 @@ const ExpenseTrackerPage = () => {
                             <FiEdit2 
                             className="text-blue-500 w-5 h-5"/> 
                           </button>
-                          <FiTrash2 className="text-red-500 w-5 h-5"/>
+                          
+                          <button
+                            onClick={() => deleteExpense(expense.id)}
+                          > 
+                            <FiTrash2 className="text-red-500 w-5 h-5"/>
+                          </button>                          
+                          
+                          
                           
                         </>
                         :  
@@ -147,7 +185,13 @@ const ExpenseTrackerPage = () => {
                             <FiCheck 
                             className="text-green-500 w-5 h-5"/> 
                           </button>
-                          <FiX className="text-red-500 w-5 h-5"/>
+                          <button 
+                          
+                          >
+                          
+                          <FiX className="text-red-500 w-5 h-5"/>    
+                          </button>
+                          
                           
                         </>
 
