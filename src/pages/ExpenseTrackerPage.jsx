@@ -7,6 +7,12 @@ const ExpenseTrackerPage = () => {
   const [isOpenSettings, setIsOpenSettings] = useState(false);
   
   const [editExpenseId, setEditExpenseId] = useState(null);
+
+  const [newExpenseRow, setnewExpenseRow] = useState(true)
+  
+  const [newExpesense, setNewExpense] = useState({
+    id: 0, date: "", concept: "", category: "", amount: 0
+  })
   
   const [expenses, setExpenses] = useState([
     { id: 1, date: '2025-06-06', concept: 'Groceries', category: 'Food', amount: 20 },
@@ -17,7 +23,7 @@ const ExpenseTrackerPage = () => {
 
   const [editedExpense, setEditedExpense] = useState({})
 
-
+  
   
   const categories = [
     "Comida",
@@ -50,6 +56,8 @@ const ExpenseTrackerPage = () => {
     ))
   }
 
+  
+
   const saveExpense = () => {    
     setEditExpenseId(null)   
 
@@ -70,6 +78,7 @@ const ExpenseTrackerPage = () => {
 
   }
 
+
   
   const settings = {
     maxExpensePerWeek: 50
@@ -81,11 +90,35 @@ const ExpenseTrackerPage = () => {
     totalExpenes: 25,
   }
 
-  const newExpense = () => {
-    expenses
+  const createNewExpense = () => {
+    setnewExpenseRow(!newExpenseRow)
     
   }
 
+  /* New Expense Functions */
+
+  const editNewExpenseData = (e) => {    
+    
+    const {name, value} = e.target
+
+    
+
+    // Se convertier el importe a número para guardarlo. 
+    const newValue = name === "amount" ? parseFloat(value): value
+
+    setNewExpense({...newExpesense, [name]: newValue})
+    console.log(newExpesense)
+  }
+
+  const addExpense = () => {    
+    setExpenses(prevExpenses => [...prevExpenses, newExpesense]);
+    setNewExpense({...newExpenseRow, id: expenses.length + 1})
+    setnewExpenseRow(false)
+  }
+
+
+  /* Total Expense and Progress */ 
+  
   const totalWeekExpense = expenses.reduce((totalExpense, currentExpense) => {
     return totalExpense + currentExpense.amount
   }, 0)
@@ -103,7 +136,7 @@ const ExpenseTrackerPage = () => {
                 <div className="flex gap-2" id="buttons">
                     <button 
                       className="bg-blue-500 rounded-full text-white cursor-pointer p-2"
-                      onClick={ () => newExpense ()  }
+                      onClick={ () => createNewExpense()  }
                       >
                       <FiPlus className="w-8 h-8 cursor-pointer"/>
                     </button>
@@ -144,9 +177,47 @@ const ExpenseTrackerPage = () => {
                 <th> Categoria </th>
                 <th> Cantidad </th>
                 <th> Acciones </th>
+
+                  {newExpenseRow &&
+                      <> 
+                        <tr> 
+                          <td className="px-6 py-4"> <input type="date" name="date" onChange={editNewExpenseData}/> </td> 
+                          <td>  <input class="border" name="concept" type="input"  onChange={editNewExpenseData} /> </td>                        
+                            <td>  
+                            <select 
+                              name="category"
+                              onChange={editNewExpenseData}>
+                              {categories.map((category) => (
+                                <option value={category}> {category} </option>
+                              ))}
+                            </select> 
+                          
+                          </td>
+                          <td > <input type="number" name="amount" className="border" onChange={editNewExpenseData} /> </td>  
+                          <td className=""> 
+                            <div className="flex space-x-2">
+                              <button onClick={() => addExpense()}>	
+                                <FiCheck className="text-green-500 w-5 h-5"/> 
+                                </button>                          
+                              <button onClick={() => cancelEditExp()}>
+                                <FiX className="text-red-500 w-5 h-5"/>    
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      </>  
+                      }
+
                 {expenses &&
                   expenses.map((expense) => (
+
+                    
+
+
                     <tr key={expense.id}>
+
+                      
+
                       
                       {editExpenseId == expense.id 
                         ? <td className="px-6 py-4"> <input type="date" name="date" value={expense.date} onChange={editExpendeData}/> </td>  
