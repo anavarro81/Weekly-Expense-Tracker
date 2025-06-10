@@ -98,23 +98,23 @@ const ExpenseTrackerPage = () => {
   }
 
   /* New Expense Functions */
-
-  const editNewExpenseData = (e) => {    
-    
-    const {name, value} = e.target
-
-    
-
+  
+  const editNewExpenseData = (e) => {       
+    const {name, value} = e.target    
     // Se convertier el importe a número para guardarlo. 
     const newValue = name === "amount" ? parseFloat(value): value
-
-    setNewExpense({...newExpesense, [name]: newValue})
-    console.log(newExpesense)
+    setNewExpense({...newExpesense, [name]: newValue})    
   }
-
+  
+  // ✔️  Button
   const addExpense = () => {    
     setExpenses(prevExpenses => [...prevExpenses, newExpesense]);
     setNewExpense({...newExpenseRow, id: expenses.length + 1})
+    setnewExpenseRow(false)
+  }
+
+  const cancelAddNewExpense = () => {
+    //
     setnewExpenseRow(false)
   }
 
@@ -201,7 +201,7 @@ const ExpenseTrackerPage = () => {
                               <button onClick={() => addExpense()}>	
                                 <FiCheck className="text-green-500 w-5 h-5"/> 
                                 </button>                          
-                              <button onClick={() => cancelEditExp()}>
+                              <button onClick={() => cancelAddNewExpense()}>
                                 <FiX className="text-red-500 w-5 h-5"/>    
                               </button>
                             </div>
