@@ -8,7 +8,7 @@ const ExpenseTrackerPage = () => {
   
   const [editExpenseId, setEditExpenseId] = useState(null);
 
-  const [newExpenseRow, setnewExpenseRow] = useState(true)
+  const [newExpenseRow, setnewExpenseRow] = useState(false)
   
   const [newExpesense, setNewExpense] = useState({
     id: 0, date: "", concept: "", category: "", amount: 0
@@ -48,10 +48,12 @@ const ExpenseTrackerPage = () => {
 
   const editExpendeData = (e) => {
     const { name, value } = e.target;
+
+    const newValue = name == "amount" ? parseFloat(value) : value
     
     setExpenses(expenses.map(expense => 
       expense.id === editExpenseId 
-      ? {...expense, [name]: value}
+      ? {...expense, [name]: newValue}
       : expense
     ))
   }
