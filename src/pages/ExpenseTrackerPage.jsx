@@ -1,5 +1,5 @@
 import { FiPlus, FiSettings, FiEdit2, FiTrash2, FiChevronLeft, FiChevronRight, FiCheck, FiX} from "react-icons/fi";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SettingsSideBar from './SettingsSideBar'
 
 const ExpenseTrackerPage = () => {
@@ -13,6 +13,8 @@ const ExpenseTrackerPage = () => {
   const [newExpesense, setNewExpense] = useState({
     id: 0, date: "", concept: "", category: "", amount: 0
   })
+
+  const [weeklyLimit, setweeklyLimit] = useState(0)
   
   const [expenses, setExpenses] = useState([
     { id: 1, date: '2025-06-06', concept: 'Groceries', category: 'Food', amount: 20 },
@@ -23,6 +25,30 @@ const ExpenseTrackerPage = () => {
 
   const [editedExpense, setEditedExpense] = useState({})
 
+  useEffect(() => {
+    
+    
+    const getWeeklyLimit = async () => {
+      
+      try {
+        const response = await fetch('http://localhost:3000/settings/limit')
+        
+        if (!response.ok) {
+          throw new Error (`Error al obtener el límite ${response.status}`)
+        }
+
+        const {limit} = await response.json()       
+
+        setweeklyLimit(limit)
+        
+      } catch(error){
+        console.log('error al recuperar la configuración ', error.message)
+      }    
+    }   
+
+    getWeeklyLimit()
+
+  }, [])
   
   
   const categories = [
