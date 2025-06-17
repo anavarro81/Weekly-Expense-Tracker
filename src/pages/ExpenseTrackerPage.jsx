@@ -108,9 +108,6 @@ const ExpenseTrackerPage = () => {
 
 
   
-  const settings = {
-    maxExpensePerWeek: 50
-  }
 
   const pagination = {
     actPage: 1,
@@ -151,7 +148,7 @@ const ExpenseTrackerPage = () => {
     return totalExpense + currentExpense.amount
   }, 0)
 
-  const progressPercentaje = totalWeekExpense / settings.maxExpensePerWeek > 1 ? 1 : totalWeekExpense / settings.maxExpensePerWeek
+  const progressPercentaje = totalWeekExpense / weeklyLimit > 1 ? 1 : totalWeekExpense / weeklyLimit
   
   
 
@@ -186,7 +183,7 @@ const ExpenseTrackerPage = () => {
 
               <div className="bg-white p-4 rounded-lg shadow-md w-full">
                 <h2 className="text-xl font-semibold mb-2"> Limite semanal </h2>
-                <p className="text-2xl text-blue-600"> {settings.maxExpensePerWeek} € </p>
+                <p className="text-2xl text-blue-600"> {weeklyLimit} € </p>
               </div>
 
               <div className="bg-white p-4 rounded-lg shadow-md w-full">
