@@ -15,6 +15,7 @@ const ExpenseTrackerPage = () => {
   })
 
   const [weeklyLimit, setweeklyLimit] = useState(0)
+  const [categories, setCategories] = useState(null)
   
   const [expenses, setExpenses] = useState([
     { id: 1, date: '2025-06-06', concept: 'Groceries', category: 'Food', amount: 20 },
@@ -31,15 +32,16 @@ const ExpenseTrackerPage = () => {
     const getWeeklyLimit = async () => {
       
       try {
-        const response = await fetch('http://localhost:3000/settings/limit')
+        const response = await fetch('http://localhost:3000/dashboard/')
         
         if (!response.ok) {
-          throw new Error (`Error al obtener el límite ${response.status}`)
+          throw new Error (`Error al obtener los datos  ${response.status}`)
         }
 
-        const {limit} = await response.json()       
+        const {limit, categories} = await response.json()       
 
         setweeklyLimit(limit)
+        setCategories(categories)
         
       } catch(error){
         console.log('error al recuperar la configuración ', error.message)
@@ -51,12 +53,6 @@ const ExpenseTrackerPage = () => {
   }, [])
   
   
-  const categories = [
-    "Comida",
-    "Restaurantes",
-    "Compras",
-    "Otras"
-  ]
 
 
   const editExpense = (id) => {    
@@ -213,7 +209,7 @@ const ExpenseTrackerPage = () => {
                               name="category"
                               onChange={editNewExpenseData}>
                               {categories.map((category) => (
-                                <option value={category}> {category} </option>
+                                <option value={category.name}> {category.name} </option>
                               ))}
                             </select> 
                           
@@ -258,7 +254,7 @@ const ExpenseTrackerPage = () => {
                             name="category"
                             onChange={editExpendeData}>
                             {categories.map((category) => (
-                              <option value={category}> {category} </option>
+                              <option value={category.name}> {category.name} </option>
                             ))}
                           </select> 
                         </td>  
