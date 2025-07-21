@@ -16,7 +16,7 @@ const ExpenseTrackerPage = () => {
   })
 
   const [weeklyLimit, setweeklyLimit] = useState(0)
-  const [categories, setCategories] = useState(null)
+  const [categories, setCategories] = useState([])
   
   const [expenses, setExpenses] = useState([])
 
@@ -30,7 +30,7 @@ const ExpenseTrackerPage = () => {
 
         // const response = await fetch('http://localhost:3000/expenses/')
         const {data} = await axiosInstance.get('/expenses/')
-        console.log('data ', data)
+        
         setExpenses(data)
 
       } catch (error) {
@@ -43,17 +43,12 @@ const ExpenseTrackerPage = () => {
       
       
       
-      try {
+      try {       
         
-        const response = await fetch('http://localhost:3000/settings/limit')
-        
-        if (!response.ok) {
-          throw new Error (`Error al obtener los datos  ${response.status}`)
-        }
 
-        const {limit, categories} = await response.json()       
+        const {data} = await axiosInstance.get('/settings/limit')
 
-        setweeklyLimit(limit)
+        setweeklyLimit(data.limit)
         setCategories(categories)
         
       } catch(error){
@@ -162,9 +157,8 @@ const ExpenseTrackerPage = () => {
   // Format de MOngoDB date string as day of week and month
   const formatDate = (mongoDBString) => {
     const date = new Date(mongoDBString)
-    const formatedDate = date.toLocaleDateString('es-ES', { weekday: 'long', month: 'long', day: 'numeric' });
-    console.log('formatedDate ', formatedDate)
-    return formatedDate
+    return date.toLocaleDateString('es-ES', { weekday: 'long', month: 'long', day: 'numeric' });    
+    
   }
   
 
