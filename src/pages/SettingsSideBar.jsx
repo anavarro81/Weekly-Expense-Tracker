@@ -1,20 +1,30 @@
 
 import {  FiX, FiTrash2 } from "react-icons/fi";
 import { useState } from "react";
-const SettingsSideBar = ({setIsOpenSettings}) => {
+const SettingsSideBar = ({setIsOpenSettings, limit})=> {
 
 
   const [categories, setCategories]  = useState(["Comida", "Restaurantes", "Compras", "Otras"])
+  const [weeklimit, setWeekLimit] = useState()
+
+  const handleChangeLimit = (e) => {
+    console.log('limite: ', e.target.value)
+    setWeekLimit(e.target.value)
+  }
+
+  const saveChange = () => {
+    console.log('weeklmite ', weeklimit)
+  }
     
 
   return (
     <div className='fixed inset-0 z-50 overflow-hidden'>
-        <div className='absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity' onClick={ () => setIsOpenSettings(false)}> </div>
+        <div className='absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity' > 
           <div className="fixed inset-y-0 right-0">
             <div className="flex flex-col  bg-white max-w-xl p-6  "> 
               <header className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl"> Setting </h2>
-                <button className="hover:bg-gray-400 hover:rounded-full "onClick={() => setIsOpenSettings(false) }>
+                <button className="hover:bg-gray-400 hover:rounded-full" onClick={() => setIsOpenSettings(false)} >
                   <FiX />
                 </button>
               </header>
@@ -25,6 +35,8 @@ const SettingsSideBar = ({setIsOpenSettings}) => {
                     <input 
                       type="number" 
                       className="w-full border rounded-[8px] py-2 px-4"
+                      defaultValue={limit}    
+                      onChange={handleChangeLimit}    
                     />
                   </div>
 
@@ -43,19 +55,28 @@ const SettingsSideBar = ({setIsOpenSettings}) => {
                       </div>
                     ))}
 
+
+
                   </div>
 
-                  <div className="flex space-x-2 justify-center">
-                    <button className="px-4 py-2 bg-blue-500 text-white"> Salvar cambios </button>
-                    <button className="px-4 py-2 bg-red-500 text-white"> Resetear semana</button>
-                  </div>
 
                   
 
                   
                 </form>         
+                  
+                  <div className="flex space-x-2 justify-center">
+                    <button 
+                      className="px-4 py-2 bg-blue-500 text-white"
+                      onClick={saveChange}> 
+                      Salvar cambios 
+                      </button>
+                    <button className="px-4 py-2 bg-red-500 text-white"> Resetear semana</button>
+                  </div>
+
             </div>
                       
+        </div>
         </div>
      </div>
   )

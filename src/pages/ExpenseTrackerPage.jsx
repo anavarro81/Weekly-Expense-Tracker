@@ -1,6 +1,7 @@
 import { FiPlus, FiSettings, FiEdit2, FiTrash2, FiChevronLeft, FiChevronRight, FiCheck, FiX} from "react-icons/fi";
 import { useState, useEffect } from "react";
 import SettingsSideBar from './SettingsSideBar'
+import {axiosInstance} from '../util/axios';
 
 const ExpenseTrackerPage = () => {
 
@@ -17,22 +18,34 @@ const ExpenseTrackerPage = () => {
   const [weeklyLimit, setweeklyLimit] = useState(0)
   const [categories, setCategories] = useState(null)
   
-  const [expenses, setExpenses] = useState([
-    { id: 1, date: '2025-06-06', concept: 'Groceries', category: 'Food', amount: 20 },
-    { id: 2, date: '2025-06-06', concept: 'Utilities', category: 'Bills', amount: 10 },
-    { id: 3, date: '2025-06-06', concept: 'Transport', category: 'Travel', amount: 5 },
-
-  ])
+  const [expenses, setExpenses] = useState([])
 
   const [editedExpense, setEditedExpense] = useState({})
 
   useEffect(() => {
     
     
+    const getData = async () => {
+      try {
+
+        // const response = await fetch('http://localhost:3000/expenses/')
+        const {data} = await axiosInstance.get('/expenses/')
+        console.log('data ', data)
+        setExpenses(data)
+
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+
+
     const getWeeklyLimit = async () => {
       
+      
+      
       try {
-        const response = await fetch('http://localhost:3000/dashboard/')
+        
+        const response = await fetch('http://localhost:3000/settings/limit')
         
         if (!response.ok) {
           throw new Error (`Error al obtener los datos  ${response.status}`)
@@ -47,7 +60,7 @@ const ExpenseTrackerPage = () => {
         console.log('error al recuperar la configuración ', error.message)
       }    
     }   
-
+    getData()
     getWeeklyLimit()
 
   }, [])
@@ -57,13 +70,13 @@ const ExpenseTrackerPage = () => {
 
   const editExpense = (id) => {    
     setEditExpenseId(id)
-    const currentExpense = expenses.find(expense => expense.id == id)
+    const currentExpense = expenses.find(expense => expense._id == id)
     setEditedExpense(currentExpense)
     
   }
 
   const deleteExpense = (id) => {    
-    const filteredExpenses = expenses.filter(expense => expense.id !== id )
+    const filteredExpenses = expenses.filter(expense => expense._id !== id )
     setExpenses(filteredExpenses)
     
   }
@@ -74,7 +87,7 @@ const ExpenseTrackerPage = () => {
     const newValue = name == "amount" ? parseFloat(value) : value
     
     setExpenses(expenses.map(expense => 
-      expense.id === editExpenseId 
+      expense._id === editExpenseId 
       ? {...expense, [name]: newValue}
       : expense
     ))
@@ -146,6 +159,13 @@ const ExpenseTrackerPage = () => {
 
   const progressPercentaje = totalWeekExpense / weeklyLimit > 1 ? 1 : totalWeekExpense / weeklyLimit
   
+  // Format de MOngoDB date string as day of week and month
+  const formatDate = (mongoDBString) => {
+    const date = new Date(mongoDBString)
+    const formatedDate = date.toLocaleDateString('es-ES', { weekday: 'long', month: 'long', day: 'numeric' });
+    console.log('formatedDate ', formatedDate)
+    return formatedDate
+  }
   
 
   return (
@@ -240,15 +260,15 @@ const ExpenseTrackerPage = () => {
                       
 
                       
-                      {editExpenseId == expense.id 
+                      {editExpenseId == expense._id 
                         ? <td className="px-6 py-4"> <input type="date" name="date" value={expense.date} onChange={editExpendeData}/> </td>  
-                        : <td className="px-6 py-4"> {expense.date} </td> }                     
+                        : <td className="px-6 py-4"> {formatDate(expense.date)} </td> }                     
                       
-                      {editExpenseId == expense.id 
+                      {editExpenseId == expense._id 
                         ? <td>  <input class="border" name="concept" type="input" placeholder={expense.concept} onChange={editExpendeData} /> </td>   
                         : <td> {expense.concept} </td> }
                       
-                      {editExpenseId == expense.id ? 
+                      {editExpenseId == expense._id? 
                         <td>  
                           <select 
                             name="category"
@@ -261,22 +281,22 @@ const ExpenseTrackerPage = () => {
                         : <td> {expense.category} </td> 
                       }                      
                       
-                      {editExpenseId == expense.id 
+                      {editExpenseId == expense._id 
                       ? <td > <input type="number" name="amount" className="border" onChange={editExpendeData} placeholder={expense.amount}/> </td>  : <td> {expense.amount} </td> }                     
                       
                       <td className=""> 
                         <div className="flex space-x-2">
-                          {editExpenseId != expense.id ?
+                          {editExpenseId != expense._id ?
                           <> 
                           <button
-                            onClick={() => editExpense(expense.id)}
+                            onClick={() => editExpense(expense._id)}
                           >
                             <FiEdit2 
                             className="text-blue-500 w-5 h-5"/> 
                           </button>
                           
                           <button
-                            onClick={() => deleteExpense(expense.id)}
+                            onClick={() => deleteExpense(expense._id)}
                           > 
                             <FiTrash2 className="text-red-500 w-5 h-5"/>
                           </button>                          
@@ -332,7 +352,7 @@ const ExpenseTrackerPage = () => {
 
 {/* Settings Sidebar */}
         {isOpenSettings && (
-          <SettingsSideBar setIsOpenSettings={setIsOpenSettings}/>
+          <SettingsSideBar setIsOpenSettings={setIsOpenSettings} limit={weeklyLimit}/>
         )}
          
 
