@@ -29,9 +29,20 @@ const ExpenseTrackerPage = () => {
       try {
 
         // const response = await fetch('http://localhost:3000/expenses/')
-        const {data} = await axiosInstance.get('/expenses/')
+        const {data} = await axiosInstance.get('/report/')
+
+        console.log ('data ', data)
+
+        setweeklyLimit(data.weeklyLimit.limit)
+        setExpenses(data.expenses)
+        setCategories(data.categories)
         
-        setExpenses(data)
+        // console.log ('weeklyLimit ', weeklyLimit)
+        // console.log ('categories', categories)
+        // console.log ('expenses ', expenses)
+
+        
+        
 
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -39,24 +50,8 @@ const ExpenseTrackerPage = () => {
     }
 
 
-    const getWeeklyLimit = async () => {
-      
-      
-      
-      try {       
-        
-
-        const {data} = await axiosInstance.get('/settings/limit')
-
-        setweeklyLimit(data.limit)
-        setCategories(categories)
-        
-      } catch(error){
-        console.log('error al recuperar la configuración ', error.message)
-      }    
-    }   
     getData()
-    getWeeklyLimit()
+    
 
   }, [])
   
