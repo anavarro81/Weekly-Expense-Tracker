@@ -183,7 +183,7 @@ const ExpenseTrackerPage = () => {
               
               <div className="bg-white p-4 rounded-lg shadow-md w-full">
                 <h2 className="text-xl font-semibold mb-2">Gasto Total</h2>
-                <p className="text-2xl text-green-600">{totalWeekExpense} €</p>
+                <p className="text-2xl text-green-600">{totalWeekExpense.toFixed(2)} €</p>
               </div>
 
               <div className="bg-white p-4 rounded-lg shadow-md w-full">
