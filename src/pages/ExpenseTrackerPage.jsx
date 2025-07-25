@@ -55,7 +55,9 @@ const ExpenseTrackerPage = () => {
   }, [])
   
   
+  // Toast Notifications
   const showError = (message) => toast.error(message);
+  const successNotification = (message) => toast.success(message);
 
   const editExpense = (id) => {    
     setEditExpenseId(id)
@@ -84,14 +86,29 @@ const ExpenseTrackerPage = () => {
 
   
 
-  const saveExpense = (expense) => {    
+  const saveExpense = async (expense) => {    
 
     
     const validExpense = validateExpenseData(expense)
 
     if (validExpense) {
-      // Alta en la base de datos
-      setEditExpenseId(null)
+
+      try {
+        
+        const updatedExpense = await axiosInstance.put(`/expenses/${expense._id}`, expense)        
+        
+        if (updatedExpense) {
+          successNotification('¡Registro actualizado!')
+          setEditExpenseId(null)
+        }        
+
+      } catch (error) {       
+        showError("Error al actualizar el registro")
+      }
+      
+      
+      
+      
     }  
 
        
