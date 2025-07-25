@@ -77,7 +77,7 @@ const ExpenseTrackerPage = () => {
         const filteredExpenses = expenses.filter(expense => expense._id !== id )
         setExpenses(filteredExpenses)
       }
-//TODO
+
     } catch(error) {
       console.log('Error al borrar el gasto ', error)
       showError('Error borrando el gasto')
@@ -455,7 +455,11 @@ const ExpenseTrackerPage = () => {
 
 {/* Settings Sidebar */}
         {isOpenSettings && (
-          <SettingsSideBar setIsOpenSettings={setIsOpenSettings} limit={weeklyLimit}/>
+          <SettingsSideBar 
+            setIsOpenSettings={setIsOpenSettings} 
+            limit={weeklyLimit}
+            setweeklyLimit={setweeklyLimit}
+            />
         )}
          
 

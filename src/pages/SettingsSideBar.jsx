@@ -1,19 +1,47 @@
 
 import {  FiX, FiTrash2 } from "react-icons/fi";
 import { useState } from "react";
-const SettingsSideBar = ({setIsOpenSettings, limit})=> {
+import {axiosInstance} from '../util/axios';
+import { ToastContainer, toast } from 'react-toastify';
+
+const SettingsSideBar = ({setIsOpenSettings, limit, setweeklyLimit})=> {
 
 
   const [categories, setCategories]  = useState(["Comida", "Restaurantes", "Compras", "Otras"])
-  const [weeklimit, setWeekLimit] = useState()
+  const [weeklimit, setWeekLimit] = useState(limit)
+
+    // Toast Notifications
+  const showError = (message) => toast.error(message);
+  const successNotification = (message) => toast.success(message);
+
 
   const handleChangeLimit = (e) => {
     console.log('limite: ', e.target.value)
     setWeekLimit(e.target.value)
   }
 
-  const saveChange = () => {
-    console.log('weeklmite ', weeklimit)
+  const saveChange = async () => {
+    
+    try {
+      
+      const {data: newlimit} = await axiosInstance.put('/settings/limit/settingsID', {limit: weeklimit})
+
+      console.log('newlimit ', newlimit)
+      
+      if (newlimit) {
+        successNotification('Limite semanal actualizado')
+        setweeklyLimit(newlimit.limit)
+        setIsOpenSettings(false)
+      }
+
+
+    } catch (error) {
+      console.log('Error al actualizar el límite semanal: ', error);
+      showError('Error al actualizar el límite semanal')
+      
+      
+    }
+    
   }
     
 
@@ -67,6 +95,7 @@ const SettingsSideBar = ({setIsOpenSettings, limit})=> {
                   
                   <div className="flex space-x-2 justify-center">
                     <button 
+                      id="saveChangesBtn"
                       className="px-4 py-2 bg-blue-500 text-white"
                       onClick={saveChange}> 
                       Salvar cambios 

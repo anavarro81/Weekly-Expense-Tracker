@@ -24,6 +24,15 @@
 | saveExpense        |                     | `saveExpense(expense)`          |
 | cancelExpenseEdit  |                     | `cancelEditExp`                 |
 
+
+### Pantalla de configuración
+## Botones de acción
+
+| Botón                                               | ID                    | Función                         |
+|-----------------------------------------------------|-----------------------|---------------------------------| 
+|  ![saveChangesButton](./img/saveChangesButton.jpg) | saveChangesBtn    | `saveChange`       |
+
+
 ---
 
 ## Toast (Notificaciones)
