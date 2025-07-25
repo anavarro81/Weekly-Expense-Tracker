@@ -17,12 +17,12 @@
 
 ## Botones de acción
 
-| Botón              | ID                  | Función                         |
-|--------------------|---------------------|----------------------------------|
-|                    | editExpenseButton    | `editExpense(expense._id)`       |
-|                    | deleteExpenseButton  | `deleteExpense(expense._id)`     |
-| saveExpense        |                     | `saveExpense(expense)`          |
-| cancelExpenseEdit  |                     | `cancelEditExp`                 |
+| Botón                                                         | ID                  | Función                         |
+|---------------------------------------------------------------|---------------------|----------------------------------|
+| ![editExpenseButton](./img/editExpense.svg)              | editExpenseButton   | `editExpense(expense._id)`       |
+| ![deleteExpenseButton](./img/deleteExpense.svg)          | deleteExpenseButton | `deleteExpense(expense._id)`     |
+| ![ConfirmChanges](./img/confirmChanges.svg)          | saveExpense | `saveExpense(expense)`     |
+| ![CancelChanges](./img/cancelChanges.svg)          | scancelExpenseEdit | `cancelEditExp`     |
 
 
 ### Pantalla de configuración
@@ -30,7 +30,7 @@
 
 | Botón                                               | ID                    | Función                         |
 |-----------------------------------------------------|-----------------------|---------------------------------| 
-|  ![saveChangesButton](./img/saveChangesButton.jpg) | saveChangesBtn    | `saveChange`       |
+|  ![saveChangesButton](./img/saveChangesButton.jpg) | saveChangesBtn    | `saveExpense(expense)`       |
 
 
 ---
