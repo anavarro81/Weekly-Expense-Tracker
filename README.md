@@ -23,3 +23,11 @@
 |                    | deleteExpenseButton  | `deleteExpense(expense._id)`     |
 | saveExpense        |                     | `saveExpense(expense)`          |
 | cancelExpenseEdit  |                     | `cancelEditExp`                 |
+
+---
+
+## Toast (Notificaciones)
+  
+
+`showError` -> Muestra una notificacion de error con el mensaje indicado. 
+`successNotification` -> Muestra una notificacion de éxito con el mensaje indicado. 

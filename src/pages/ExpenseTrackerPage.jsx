@@ -66,9 +66,29 @@ const ExpenseTrackerPage = () => {
     
   }
 
-  const deleteExpense = (id) => {    
-    const filteredExpenses = expenses.filter(expense => expense._id !== id )
-    setExpenses(filteredExpenses)
+  const deleteExpense = async (id) => {    
+
+    
+    try {
+      const deletedExpense = await axiosInstance.delete(`/expenses/${id}`)
+      
+      if (deletedExpense) {
+        successNotification('¡Gasto borrado!')
+        const filteredExpenses = expenses.filter(expense => expense._id !== id )
+        setExpenses(filteredExpenses)
+      }
+//TODO
+    } catch(error) {
+      console.log('Error al borrar el gasto ', error)
+      showError('Error borrando el gasto')
+
+    }
+    
+
+
+    
+
+    
     
   }
 
