@@ -441,7 +441,7 @@ const ExpenseTrackerPage = () => {
                       }                      
                       
                       {editExpenseId == expense._id 
-                      ? <td > <input type="number" name="amount" className="border" onChange={editExpendeData} placeholder={expense.amount}/> </td>  : <td> {expense.amount} </td> }                     
+                      ? <td > <input type="number" name="amount" className="border" onChange={editExpendeData} placeholder={expense.amount}/>  </td>  : <td> {expense.amount} €</td> }                     
                       
                       <td className=""> 
                         <div className="flex space-x-2">
