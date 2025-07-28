@@ -25,6 +25,15 @@ const ExpenseTrackerPage = () => {
   
   const [expenses, setExpenses] = useState([])
 
+
+  const [pagination, setPagination] = useState({ 
+   actPage: 1, 
+   totalPages: 1
+  })
+
+  const [nextPageEnabled, setNextPageEnabled] = useState(false)
+  const [prevPageEnabled, setPrevPageEnabled] = useState(true)
+
   const [editedExpense, setEditedExpense] = useState({})
 
   useEffect(() => {
@@ -36,11 +45,10 @@ const ExpenseTrackerPage = () => {
         // const response = await fetch('http://localhost:3000/expenses/')
         const {data} = await axiosInstance.get('/report/')
 
-        console.log ('data ', data)
-
         setweeklyLimit(data.weeklyLimit.limit)
         setExpenses(data.expenses)
         setCategories(data.categories)
+        calculatePagination(data.numExpenses)
         
 
       } catch (error) {
@@ -58,6 +66,12 @@ const ExpenseTrackerPage = () => {
   // Toast Notifications
   const showError = (message) => toast.error(message);
   const successNotification = (message) => toast.success(message);
+
+  const calculatePagination = (expensesNumber) => {
+    const numPages = Math.ceil(expensesNumber / 5);
+    setPagination({ ...pagination, totalPages: numPages });    
+
+  }
 
   const editExpense = (id) => {    
     setEditExpenseId(id)
@@ -139,13 +153,7 @@ const ExpenseTrackerPage = () => {
 
   const validateExpenseData = (expense) => {
   
-  //   {
-  //   "_id": "6881f1a4630243bf6c64ac1c",
-  //   "date": "2025-07-25",
-  //   "concept": "Rotulador",
-  //   "category": "Compras",
-  //   "amount": 2 
-  // }
+  
 
   const {date, concept, category, amount } = expense
 
@@ -199,11 +207,10 @@ const ExpenseTrackerPage = () => {
 
   
 
-  const pagination = {
-    actPage: 1,
-    totalPages: 5,
-    totalExpenes: 25,
-  }
+
+
+  
+  
 
   const createNewExpense = () => {
     setnewExpenseRow(!newExpenseRow)
@@ -254,6 +261,46 @@ const ExpenseTrackerPage = () => {
     const date = new Date(mongoDBString)
     return date.toLocaleDateString('es-ES', { weekday: 'long', month: 'long', day: 'numeric' });    
     
+  }
+
+  const nextPage = async () => {      
+    
+    if (pagination.actPage < pagination.totalPages) {      
+      const nextPageNum = pagination.actPage + 1                
+      
+      try {
+        const {data} = await axiosInstance.get(`/expenses/?page=${nextPageNum}&limit=5`) 
+        setPagination(prev => ({ ...prev, actPage: nextPageNum }));
+        setExpenses(data)        
+        setNextPageEnabled(nextPageNum >= pagination.totalPages)
+        setPrevPageEnabled(nextPageNum <= 1)        
+      } catch (error) {
+        console.error('Error al obtener los sigueintes gastos ', error)
+        showError('Error al obtener los sigueintes gastos')
+      }
+      
+    } 
+    
+  }
+
+  const prevPage = async () => {
+
+    if (pagination.actPage > 1) {
+      const nextPageNum = pagination.actPage -1 
+      
+      try {
+        const {data} = await axiosInstance.get(`/expenses/?page=${nextPageNum}&limit=5`)
+        setExpenses(data)
+        setPagination(prev => ({ ...prev, actPage: nextPageNum }));        
+        setNextPageEnabled(nextPageNum >= pagination.totalPages)
+        setPrevPageEnabled(nextPageNum <= 1)        
+      } catch (error) {
+        console.error('Error al obtener los gastos anteriores ', error)
+        showError('Error al obtener los gastos anteriores')
+      }
+      
+    }
+
   }
   
 
@@ -439,12 +486,19 @@ const ExpenseTrackerPage = () => {
         {expenses.length > 0 &&
 
        <div className="flex justify-between mt-8" id="pagination">
-        <p className="text-sm text-gray-700"> { `Pagina ${pagination.actPage}  de ${pagination.totalPages} de ${pagination.totalExpenes}`}</p>
+        <p className="text-sm text-gray-700"> { `Pagina ${pagination.actPage}  de ${pagination.totalPages} `}</p>
         <div className="flex space-x-2">
-          <button className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed">
+          <button 
+            onClick={prevPage}
+            disabled={prevPageEnabled}
+            className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed disabled">
+              
             <FiChevronLeft className="w-5 h-5"/>
           </button>
-          <button className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed">
+          <button 
+            disabled={nextPageEnabled}
+            onClick={nextPage}
+            className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed">
             <FiChevronRight className="w-5 h-5"/>
           </button>
        </div>

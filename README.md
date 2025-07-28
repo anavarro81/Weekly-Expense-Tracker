@@ -1,6 +1,11 @@
 ![Interfaz de usuario](./img/DashBoard-[screen-shoot].jpg)
 
+# Índice
 
+- [Estados](#estados)
+- [Botones de acción](#botones-de-acción)
+- [Pantalla de configuración](#pantalla-de-configuración)
+- [Toast (Notificaciones)](#toast-notificaciones)
 
 # Estados
 
