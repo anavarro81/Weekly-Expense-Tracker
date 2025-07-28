@@ -123,6 +123,7 @@ const ExpenseTrackerPage = () => {
   const saveExpense = async (expense) => {    
 
     
+    
     const validExpense = validateExpenseData(expense)
 
     if (validExpense) {
@@ -229,12 +230,23 @@ const ExpenseTrackerPage = () => {
   // ✔️  Button
   const addExpense = async () => {
     try {
+      
       console.log ('newExpesense ', newExpesense)
-      const {data: created} = await axiosInstance.post('/expenses/', newExpesense);    
-      setExpenses(prevExpenses => [...prevExpenses, created]);
-      setnewExpenseRow(false)
+
+      
+
+      
+      const validExpense = validateExpenseData(newExpesense)
+
+      if (validExpense) {
+        const {data: created} = await axiosInstance.post('/expenses/', newExpesense);    
+        setExpenses(prevExpenses => [...prevExpenses, created]);
+        setnewExpenseRow(false)
+      }     
+      
     } catch (error) {
       console.error("Error al crear gasto:", error);
+      showError("Error al insertar el gasto")
     }
       
     
@@ -243,7 +255,10 @@ const ExpenseTrackerPage = () => {
   }
 
   const cancelAddNewExpense = () => {
-    //
+    
+    // Se inicializa para evitar que retenga valores previsos
+    setNewExpense({id: 0, date: "", concept: "", category: "", amount: 0})
+
     setnewExpenseRow(false)
   }
 
@@ -345,7 +360,7 @@ const ExpenseTrackerPage = () => {
               <div className="bg-white p-4 rounded-lg shadow-md w-full">
                 <h2 className="text-xl font-semibold mb-2"> Progreso </h2>
                   <div className='w-full bg-gray-200 rounded h-2.5'>                    		
-                        <div className='bg-green-500 h-2.5 rounded'                         
+                        <div className={`${progressPercentaje == 1 ? `bg-red-500` : `bg-green-500`} h-2.5 rounded`}                        
                         style={{ width: `${ progressPercentaje * 100}%` }}></div>				
 		                    </div>                  
               </div>            
@@ -379,10 +394,12 @@ const ExpenseTrackerPage = () => {
                           <td > <input type="number" name="amount" className="border" onChange={editNewExpenseData} /> </td>  
                           <td className=""> 
                             <div className="flex space-x-2">
-                              <button id="confirmNewExpens" onClick={() => addExpense()}>	
+                              <button id="confirmNewExpense" onClick={() => addExpense()}>	
                                 <FiCheck className="text-green-500 w-5 h-5"/> 
                                 </button>                          
-                              <button onClick={() => cancelAddNewExpense()}>
+                              <button 
+                                id="cancelAddNewExpense"
+                                onClick={() => cancelAddNewExpense()}>
                                 <FiX className="text-red-500 w-5 h-5"/>    
                               </button>
                             </div>

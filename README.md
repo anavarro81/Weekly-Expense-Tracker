@@ -20,7 +20,7 @@
 
 ---
 
-## Botones de acción
+## Botones ediccion
 
 | Botón                                                         | ID                  | Función                         |
 |---------------------------------------------------------------|---------------------|----------------------------------|
@@ -28,6 +28,13 @@
 | ![deleteExpenseButton](./img/deleteExpense.svg)          | deleteExpenseButton | `deleteExpense(expense._id)`     |
 | ![ConfirmChanges](./img/confirmChanges.svg)          | saveExpense | `saveExpense(expense)`     |
 | ![CancelChanges](./img/cancelChanges.svg)          | scancelExpenseEdit | `cancelEditExp`     |
+
+
+## Botones alta
+| Botón                                                         | ID                  | Función                         |
+|---------------------------------------------------------------|---------------------|----------------------------------|
+| ![ConfirmChanges](./img/confirmChanges.svg)          | confirmNewExpense | `addExpense`     |
+| ![CancelChanges](./img/cancelChanges.svg)          | cancelAddNewExpense | `cancelAddNewExpense`     |
 
 
 ### Pantalla de configuración
@@ -45,3 +52,10 @@
 
 `showError` -> Muestra una notificacion de error con el mensaje indicado. 
 `successNotification` -> Muestra una notificacion de éxito con el mensaje indicado. 
+
+
+## Validar gastos
+
+`validateExpenseData(expense)`
+
+Valida que los datos del gasto este informados correctamente. 
