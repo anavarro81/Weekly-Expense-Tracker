@@ -11,17 +11,27 @@ const LoginRegisterPage = () => {
     password: ""
   };
   
-  const [isRegisterTab, setisRegisterTab] = useState("Registro")
+  const [isRegisterTab, setIsRegisterTab] = useState("Registro")
 
   const [userData, setUserData] = useState(INITIAL_STATE)
 
-  const [userDataError, setUserDataError] = useState({"errorUser": "", "errorEmail": "",  "errorPassword": ""})
+  const [errors, setErrors] = useState({})
 
+  const {user, email, password} = userData
+  
   const notify = (type, message) => {
+
+    switch(type) {
+      case "success":
+        toast.success(message);   
+        break;
+      case "error": 
+        toast.error(message)
+        break;
+      default: 
+        toast(message)
+    }
     
-    if (type == "success") toast.success(message);   
-    
-    if (type == "error") toast.error(message)
 
   };
 
@@ -31,69 +41,81 @@ const LoginRegisterPage = () => {
     setUserData(prev => ({...prev, [name]: value}))    
   }
 
+  const validateForm = () => {
+    
+    const newErrors = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    // Si estoy en la pestaña de registro, valido el nombre de usuario
+    if(isRegisterTab) {
+      
+      // Se usa trim para evitar cadeas vacias, solo espacios por ejemplo: "   "
+      if (!user.trim()) 
+        newErrors.user = "El nombre del usuario el obligatorio"    
+      
+  }
+
+      if (!email.trim()) newErrors.email = "El email es obligatorio";
+      else if (!emailRegex.test(email)) newErrors.email = "El formato del email no es válido";
+
+      if (!password) newErrors.password = "La contraseña es obligatoria";
+      else if (password.length < 6) newErrors.password = "La contraseña debe tener al menos 6 caracteres";
+    
+    return newErrors;
+
+
+
+  }
+
   const createAccount = async (e) => {
     e.preventDefault();
-    const {user, email, password} = userData;
 
-    let valid = true;
+      const formErrors = validateForm()
 
-    // Validación usuario
-    if (!user) {
-      setUserDataError(prev => ({...prev, errorUser: "El nombre de usuario es obligatorio"}));
-      valid = false;
-    } else {
-      setUserDataError(prev => ({...prev, errorUser: ""}));
+
+      // Verifica is hay errores en el formulario. 
+      // Si el objeto tiene alguna clave, significa que tiene errores. 
+      if (Object.keys(formErrors).length > 0) {
+        // Actualiza el estado de errores una sola vez
+        setErrors(formErrors); 
+        return;
     }
+    
+    // Inicializa los errores si todo va bien. 
+    setErrors({})    
 
-    // Validación email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email) {
-      setUserDataError(prev => ({...prev, errorEmail: "El email es obligatorio"}));
-      valid = false;
-    } else if (!emailRegex.test(email)) {
-      setUserDataError(prev => ({...prev, errorEmail: "El email no es válido"}));
-      valid = false;
-    } else {
-      setUserDataError(prev => ({...prev, errorEmail: ""}));
-    }
-
-    // Validación password
-    if (!password) {
-      setUserDataError(prev => ({...prev, errorPassword: "La contraseña es obligatoria"}));
-      valid = false;
-    } else if (password.length < 6) {
-      setUserDataError(prev => ({...prev, errorPassword: "La contraseña debe tener al menos 6 caracteres"}));
-      valid = false;
-    } else {
-      setUserDataError(prev => ({...prev, errorPassword: ""}));
-    }
-
-    // Si todo es válido, aquí iría la lógica para crear la cuenta
-    if (valid) {
+    const endpoint = isRegisterTab ? '/auth/register' : '/auth/login'
+    const payload  = isRegisterTab ? {user, email, password} : {email, password}
+    
       try {
-        const {data} = await axiosInstance.post('/auth/register', userData)
+        const {data} = await axiosInstance.post(endpoint, payload)
         
         notify("success", "login correcto")
       } catch (error) {
         console.error('error al hacer el login', error);
         notify("error", "error en el login")
-      }
-      
+      }     
 
-    }
+    
   }
+
+  const switchTab = (isRegister) => {
+      setIsRegisterTab(isRegister);
+      setErrors({}); // Limpia los errores al cambiar de pestaña
+      setFormData(INITIAL_STATE); // Resetea el formulario
+  }
+
 
 
   return (
         <div className="bg-gray-100 flex items-center justify-center min-h-screen">
       <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
-            <div>
-            <button onClick={notify}>Guardar</button>
+            <div>            
             <ToastContainer />
             </div>
 
-       <input type="radio" name="tab" id="tab-registro" className="hidden peer/tab-registro" onChange={() => setisRegisterTab(true)} />
-       <input type="radio" name="tab" id="tab-login" className="hidden peer/tab-login" onChange={() => setisRegisterTab(false)}/> 
+       <input type="radio" name="tab" id="tab-registro" className="hidden peer/tab-registro" onChange={() => switchTab(true)} />
+       <input type="radio" name="tab" id="tab-login" className="hidden peer/tab-login" onChange={() => switchTab(false)}/> 
             <div className="flex mb-6 border-b">
               <label htmlFor="tab-registro"
                 className={`w-1/2 text-center py-2 font-semibold cursor-pointer border-b-2 ${isRegisterTab ? `border-blue-500 text-blue-500` : `text-gray-500 border-transparent`}`}>
@@ -115,7 +137,7 @@ const LoginRegisterPage = () => {
                 onChange={handleUserData}
                 placeholder="Tu nombre"
                 className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-300" />
-                <p className="text-red-500 text-sm"> {userDataError.errorUser && userDataError.errorUser}</p>
+                <p className="text-red-500 text-sm"> {errors.user && errors.user}</p>
             </div>
             <div>
               <label className="block text-sm font-medium">Correo electrónico</label>
@@ -123,7 +145,7 @@ const LoginRegisterPage = () => {
                 placeholder="email@ejemplo.com"
                 onChange={handleUserData}
                 className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-300" />
-                <p className="text-red-500 text-sm"> {userDataError.errorEmail && userDataError.errorEmail}</p>
+                <p className="text-red-500 text-sm"> {errors.email && errors.email}</p>
             </div>
             <div>
               <label className="block text-sm font-medium">Contraseña</label>
@@ -132,7 +154,7 @@ const LoginRegisterPage = () => {
                 placeholder="••••••••"
                 onChange={handleUserData}
                 className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-300" />
-                <p className="text-red-500 text-sm"> {userDataError.errorPassword && userDataError.errorPassword}</p>
+                <p className="text-red-500 text-sm"> {errors.password && errors.password}</p>
             </div>
             <button 
               className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition"
