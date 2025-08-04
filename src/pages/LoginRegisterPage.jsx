@@ -2,6 +2,8 @@ import React, {use, useState} from 'react'
 import {axiosInstance} from '../util/axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {useNavigate} from "react-router-dom";
+import {useUser} from '../Providers/UserProvider'
 
 const LoginRegisterPage = () => {
 
@@ -10,6 +12,8 @@ const LoginRegisterPage = () => {
     email: "",
     password: ""
   };
+
+  const navigate = useNavigate();
   
   const [isRegisterTab, setIsRegisterTab] = useState("Registro")
 
@@ -18,6 +22,9 @@ const LoginRegisterPage = () => {
   const [errors, setErrors] = useState({})
 
   const {user, email, password} = userData
+
+  const {logedUserData, setLogedUserData} = useUser()
+
   
   const notify = (type, message) => {
 
@@ -37,7 +44,12 @@ const LoginRegisterPage = () => {
 
 
   const handleUserData = (e) => {
+
+    
+    
     const {name, value} = e.target
+
+
     setUserData(prev => ({...prev, [name]: value}))    
   }
 
@@ -67,10 +79,14 @@ const LoginRegisterPage = () => {
 
   }
 
-  const createAccount = async (e) => {
+  const handleSubmitForm = async (e) => {
     e.preventDefault();
 
+      
+
       const formErrors = validateForm()
+
+
 
 
       // Verifica is hay errores en el formulario. 
@@ -86,11 +102,19 @@ const LoginRegisterPage = () => {
 
     const endpoint = isRegisterTab ? '/auth/register' : '/auth/login'
     const payload  = isRegisterTab ? {user, email, password} : {email, password}
+
+      console.log('endpoint ', endpoint)
+      console.log('payload ', payload)
     
       try {
         const {data} = await axiosInstance.post(endpoint, payload)
+
+        console.log('data ', data)
+        localStorage.setItem('authToken', data.userInfo.token)
+        navigate(`/dashboard`)
+
         
-        notify("success", "login correcto")
+        
       } catch (error) {
         console.error('error al hacer el login', error);
         notify("error", "error en el login")
@@ -102,7 +126,7 @@ const LoginRegisterPage = () => {
   const switchTab = (isRegister) => {
       setIsRegisterTab(isRegister);
       setErrors({}); // Limpia los errores al cambiar de pestaña
-      setFormData(INITIAL_STATE); // Resetea el formulario
+      setUserData(INITIAL_STATE); // Resetea el formulario
   }
 
 
@@ -158,7 +182,7 @@ const LoginRegisterPage = () => {
             </div>
             <button 
               className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition"
-              onClick={createAccount}
+              onClick={handleSubmitForm}
               >
               Crear cuenta
             </button>
@@ -177,6 +201,8 @@ const LoginRegisterPage = () => {
         <div>
           <label className="block text-sm font-medium">Correo electrónico</label>
           <input type="email"
+                 name="email"
+                 onChange={handleUserData}
                  placeholder="email@ejemplo.com"
                  className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-300"/>
         </div>
@@ -184,10 +210,13 @@ const LoginRegisterPage = () => {
           <label className="block text-sm font-medium">Contraseña</label>
           <input type="password"
                  placeholder="••••••••"
+                 name="password"
+                 onChange={handleUserData}
                  className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-300"/>
         </div>
-        <button type="submit"
-                className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition">
+        <button
+        onClick={handleSubmitForm}        
+        className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition">
           Iniciar sesión
         </button>
         <p className="text-sm text-center mt-2 text-gray-600">
