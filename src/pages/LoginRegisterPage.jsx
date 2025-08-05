@@ -110,8 +110,19 @@ const LoginRegisterPage = () => {
         const {data} = await axiosInstance.post(endpoint, payload)
 
         console.log('data ', data)
-        localStorage.setItem('authToken', data.userInfo.token)
-        navigate(`/dashboard`)
+
+        if(!isRegisterTab) {
+          localStorage.setItem('authToken', data.userInfo.token)
+          setLogedUserData(data.userInfo)
+          navigate(`/dashboard`)
+        } else {
+          
+          notify("success", "Usuario registrado con exito")  
+        }
+
+
+        
+        
 
         
         

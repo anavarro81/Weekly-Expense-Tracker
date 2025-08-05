@@ -12,6 +12,7 @@ const UserContext = createContext();
 export const UserProvider = ({ children }) => {
     
     const INITIAL_DATA = {
+        id: "",
         email: "",
         user: "",
         token: ""

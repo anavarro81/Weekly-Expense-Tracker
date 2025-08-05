@@ -1,11 +1,20 @@
-import { FiPlus, FiSettings, FiEdit2, FiTrash2, FiChevronLeft, FiChevronRight, FiCheck, FiX} from "react-icons/fi";
+import { FiPlus, FiSettings, FiEdit2, FiTrash2, FiChevronLeft, FiChevronRight, FiCheck, FiX, } from "react-icons/fi";
+import { IoExitOutline } from "react-icons/io5";
+
 import { useState, useEffect } from "react";
 import SettingsSideBar from './SettingsSideBar'
 import {axiosInstance} from '../util/axios';
 import { ToastContainer, toast } from 'react-toastify';
-
-
+import {useNavigate} from "react-router-dom";
+import {useUser} from '../Providers/UserProvider'
 const ExpenseTrackerPage = () => {
+
+  // Permite redirigir al salir de la app
+  const navigate = useNavigate();
+
+  const {logedUserData, setLogedUserData} = useUser()
+
+  console.log('logedUserData >> ', logedUserData)
 
   // Muestra | Oculta la ventana de configuración
   const [isOpenSettings, setIsOpenSettings] = useState(false);
@@ -231,15 +240,17 @@ const ExpenseTrackerPage = () => {
   const addExpense = async () => {
     try {
       
-      console.log ('newExpesense ', newExpesense)
+      // console.log ('newExpesense ', newExpesense)
 
-      
+      const payload = {...newExpesense, userId: logedUserData.userId}
 
       
       const validExpense = validateExpenseData(newExpesense)
 
+      console.log('payload >> ', payload)
+
       if (validExpense) {
-        const {data: created} = await axiosInstance.post('/expenses/', newExpesense);    
+        const {data: created} = await axiosInstance.post('/expenses/', payload);    
         setExpenses(prevExpenses => [...prevExpenses, created]);
         setnewExpenseRow(false)
       }     
@@ -318,6 +329,12 @@ const ExpenseTrackerPage = () => {
 
   }
   
+  const logout = () => {
+    localStorage.removeItem('authToken')
+    setLogedUserData({})
+    navigate('/')
+  }
+  
 
   return (
     
@@ -334,12 +351,18 @@ const ExpenseTrackerPage = () => {
                       onClick={ () => createNewExpense()  }
                       >
                       <FiPlus className="w-8 h-8 cursor-pointer"/>
-                    </button>
+                    </button>                    
                     <button 
                       id="showSettingsBtn"
                       className="bg-gray-500 rounded-full text-white cursor-pointer p-2"
                       onClick ={() => setIsOpenSettings(!isOpenSettings) }>
                       <FiSettings className="w-8 h-8"/>
+                    </button>
+                    <button 
+                      id="userLogged"
+                      className="bg-orange-500 rounded-full text-white cursor-pointer p-2"
+                      onClick ={logout }>
+                      <IoExitOutline className="w-8 h-8"/>
                     </button>
                 </div>        
           </div>

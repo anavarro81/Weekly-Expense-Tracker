@@ -1,9 +1,10 @@
-import React, {use, useState} from 'react'
+
 import ExpenseTrackerPage from './pages/ExpenseTrackerPage'
 import LoginRegisterPage from './pages/LoginRegisterPage'
 // Impotar createBrowserRouter y RouterProvider
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import {UserProvider} from '../src/Providers/UserProvider'
+import RequireAuth from '../src/components/RequireAuth'
 
 const App = () => {
 
@@ -16,7 +17,11 @@ const App = () => {
 
     {
       path: '/dashboard',
-      element: <ExpenseTrackerPage/>
+      element: (
+        <RequireAuth> 
+          <ExpenseTrackerPage/>
+        </RequireAuth>
+      )      
     }
 
 
