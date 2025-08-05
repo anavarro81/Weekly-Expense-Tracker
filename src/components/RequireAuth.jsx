@@ -4,7 +4,9 @@ import {useUser} from '../Providers/UserProvider'
 
 const RequireAuth = ({ children }) => {
 
-    const {logedUserData} = useUser
+    const {logedUserData} = useUser()
+
+    console.log('logedUserData ', logedUserData)
 
     if(!logedUserData) {
         console.log('estoy aquiii');
