@@ -54,9 +54,9 @@ const ExpenseTrackerPage = () => {
         // const response = await fetch('http://localhost:3000/expenses/')
         const {data} = await axiosInstance.get('/report/')
 
-        setweeklyLimit(data.weeklyLimit.limit)
+        setweeklyLimit(data.userData.weeklylimit)
         setExpenses(data.expenses)
-        setCategories(data.categories)
+        setCategories(data.userData.categories)
         calculatePagination(data.numExpenses)
         
 
@@ -406,8 +406,10 @@ const ExpenseTrackerPage = () => {
                           <td>  <input class="border" name="concept" type="input"  onChange={editNewExpenseData} /> </td>                        
                             <td>  
                             <select 
+                              
                               name="category"
                               onChange={editNewExpenseData}>
+                              <option value=""> Selecciona una categoria </option>
                               {categories.map((category) => (
                                 <option value={category.name}> {category.name} </option>
                               ))}

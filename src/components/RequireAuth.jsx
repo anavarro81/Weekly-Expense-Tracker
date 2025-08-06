@@ -6,7 +6,6 @@ const RequireAuth = ({ children }) => {
 
     const {logedUserData} = useUser()
 
-    console.log('logedUserData ', logedUserData)
 
     if(!logedUserData) {
         console.log('estoy aquiii');
