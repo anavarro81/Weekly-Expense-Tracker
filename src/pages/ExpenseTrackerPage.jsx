@@ -555,6 +555,7 @@ const ExpenseTrackerPage = () => {
             setIsOpenSettings={setIsOpenSettings} 
             limit={weeklyLimit}
             setweeklyLimit={setweeklyLimit}
+            Usercategories={categories}
             />
         )}
          

@@ -112,7 +112,7 @@ const LoginRegisterPage = () => {
         console.log('data ', data)
 
         if(!isRegisterTab) {
-          console.log('autenfico al usuario...')
+          
           console.log('data.userInfo', data.userInfo);
           
           localStorage.setItem('authToken', data.userInfo.token)

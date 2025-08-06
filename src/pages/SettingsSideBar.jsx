@@ -4,10 +4,11 @@ import { useState } from "react";
 import {axiosInstance} from '../util/axios';
 import { ToastContainer, toast } from 'react-toastify';
 
-const SettingsSideBar = ({setIsOpenSettings, limit, setweeklyLimit})=> {
+const SettingsSideBar = ({setIsOpenSettings, limit, setweeklyLimit, Usercategories})=> {
 
+  console.log ('Usercategories ', Usercategories)
 
-  const [categories, setCategories]  = useState(["Comida", "Restaurantes", "Compras", "Otras"])
+  const [categories, setCategories]  = useState(Usercategories)
   const [weeklimit, setWeekLimit] = useState(limit)
 
     // Toast Notifications
@@ -21,16 +22,26 @@ const SettingsSideBar = ({setIsOpenSettings, limit, setweeklyLimit})=> {
   }
 
   const saveChange = async () => {
+
+    const settings = {};
+
+    if (limit !== weeklimit) {
+      settings.limit = weeklimit
+    }
+
+    
+
+
     
     try {
       
-      const {data: newlimit} = await axiosInstance.put('/settings/limit/settingsID', {limit: weeklimit})
+      const {data: user} = await axiosInstance.put('/user/setting', {limit: weeklimit})
 
-      console.log('newlimit ', newlimit)
       
-      if (newlimit) {
+      
+      if (user) {
         successNotification('Limite semanal actualizado')
-        setweeklyLimit(newlimit.limit)
+        setweeklyLimit(user.weeklylimit)
         setIsOpenSettings(false)
       }
 
@@ -46,7 +57,7 @@ const SettingsSideBar = ({setIsOpenSettings, limit, setweeklyLimit})=> {
     
 
   return (
-    <div className='fixed inset-0 z-50 overflow-hidden'>
+    <div className='fixed inset-0 z-50 overflow-hidden' id="settingSideBar">
         <div className='absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity' > 
           <div className="fixed inset-y-0 right-0">
             <div className="flex flex-col  bg-white max-w-xl p-6  "> 
@@ -78,7 +89,7 @@ const SettingsSideBar = ({setIsOpenSettings, limit, setweeklyLimit})=> {
                   <div>
 
                     {categories && categories.map((categorie) => (
-                      <div className="flex justify-between items-center px-4 py-2 bg-gray-50 mb-2"> {categorie} 
+                      <div className="flex justify-between items-center px-4 py-2 bg-gray-50 mb-2"> {categorie.name} 
                       <FiTrash2/>
                       </div>
                     ))}
