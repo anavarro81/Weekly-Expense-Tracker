@@ -14,7 +14,7 @@ const ExpenseTrackerPage = () => {
 
   const {logedUserData, setLogedUserData} = useUser()
 
-  console.log('logedUserData >> ', logedUserData)
+  
 
   // Muestra | Oculta la ventana de configuración
   const [isOpenSettings, setIsOpenSettings] = useState(false);
