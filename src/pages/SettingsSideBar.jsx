@@ -1,14 +1,14 @@
 
 import {  FiX, FiTrash2 } from "react-icons/fi";
+import { TfiPencil } from "react-icons/tfi";
 import { useState } from "react";
 import {axiosInstance} from '../util/axios';
 import { ToastContainer, toast } from 'react-toastify';
 
-const SettingsSideBar = ({setIsOpenSettings, limit, setweeklyLimit, Usercategories})=> {
+const SettingsSideBar = ({setIsOpenSettings, limit, setweeklyLimit, categories, setCategories})=> {
 
-  console.log ('Usercategories ', Usercategories)
-
-  const [categories, setCategories]  = useState(Usercategories)
+  
+  const [settingCategories, setSettingCategories]  = useState(categories)
   const [weeklimit, setWeekLimit] = useState(limit)
 
     // Toast Notifications
@@ -21,6 +21,14 @@ const SettingsSideBar = ({setIsOpenSettings, limit, setweeklyLimit, Usercategori
     setWeekLimit(e.target.value)
   }
 
+  const deleteCategory = (categorie) => {
+
+    setSettingCategories(prev =>
+      prev.filter(value => value._id !== categorie._id)
+    );
+  }
+
+
   const saveChange = async () => {
 
     const settings = {};
@@ -29,31 +37,38 @@ const SettingsSideBar = ({setIsOpenSettings, limit, setweeklyLimit, Usercategori
       settings.limit = weeklimit
     }
 
+    // Check if categories have changed
+    if (settingCategories !== categories) {
+      settings.categories = categories
+      console.log('Categorias actualizadas: ', categories);
+    }
     
 
-
-    
     try {
-      
-      const {data: user} = await axiosInstance.put('/user/setting', {limit: weeklimit})
+      const { data: user } = await axiosInstance.put('/user/setting', settings)
 
-      
-      
       if (user) {
-        successNotification('Limite semanal actualizado')
+        successNotification('Datos actualizados correctamente');
         setweeklyLimit(user.weeklylimit)
         setIsOpenSettings(false)
+        setCategories(settingCategories)
       }
-
 
     } catch (error) {
       console.log('Error al actualizar el límite semanal: ', error);
       showError('Error al actualizar el límite semanal')
-      
-      
+
     }
-    
+
   }
+
+
+    
+    
+
+  
+
+    
     
 
   return (
@@ -87,10 +102,19 @@ const SettingsSideBar = ({setIsOpenSettings, limit, setweeklyLimit, Usercategori
 
                   <label htmlFor="categories"> Categorias </label>
                   <div>
-
-                    {categories && categories.map((categorie) => (
+{/* Categorias */}
+                    {settingCategories && settingCategories.map((categorie) => (
                       <div className="flex justify-between items-center px-4 py-2 bg-gray-50 mb-2"> {categorie.name} 
-                      <FiTrash2/>
+                      <div key={categorie._id} id="actionButtons" className="flex gap-2 items-center">
+                        <TfiPencil />
+                        <button
+                          type="button"
+                          id="deleteCategoryButton"
+                          onClick={() => deleteCategory(categorie)}
+                        >
+                          <FiTrash2/>
+                        </button>
+                      </div>
                       </div>
                     ))}
 
