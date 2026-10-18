@@ -83,8 +83,6 @@ const LoginRegisterPage = () => {
     const endpoint = "/auth/login"; // isRegisterTab ? "/auth/register" : "/auth/login";
     const payload = { email, password }; // isRegisterTab ? { user, email, password } : { email, password };
 
-    console.log("endpoint ", endpoint);
-    console.log("payload ", payload);
 
     try {
       const { data } = await axiosInstance.post(endpoint, payload);
@@ -181,6 +179,7 @@ const LoginRegisterPage = () => {
         */}
 
         {/* Formulario de Login */}
+        <div> Login </div>
         <div id="login-tab" className="block">
           <form className="space-y-4">
             <div>
