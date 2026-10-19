@@ -16,7 +16,11 @@ import { axiosInstance } from "../util/axios";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../Providers/UserProvider";
+import NewExpenseModal from "./NewExpenseModal";
+
 const ExpenseTrackerPage = () => {
+  
+
   // Permite redirigir al salir de la app
   const navigate = useNavigate();
 
@@ -24,6 +28,7 @@ const ExpenseTrackerPage = () => {
 
   // Muestra | Oculta la ventana de configuración
   const [isOpenSettings, setIsOpenSettings] = useState(false);
+  const [isOpenNewExpense, setIsOpenNewExpense] = useState(true);
 
   // Identifica el registro editardo por su id
   const [editExpenseId, setEditExpenseId] = useState(null);
@@ -65,7 +70,7 @@ const ExpenseTrackerPage = () => {
           },
         });
 
-        console.log("data.userData", data.userData)
+        console.log("data.userData", data.userData);
 
         setLogedUserData(data.userData);
         setweeklyLimit(data.userData.weeklylimit);
@@ -221,11 +226,11 @@ const ExpenseTrackerPage = () => {
   // ✔️  Button
   const addExpense = async () => {
     try {
-      // console.log ('newExpesense ', newExpesense)
+      
 
       const payload = { ...newExpesense, userId: logedUserData._id };
 
-      console.log("payload >> ", payload);
+      
 
       const validExpense = validateExpenseData(newExpesense);
 
@@ -366,18 +371,18 @@ const ExpenseTrackerPage = () => {
         {/* Sumarize buttons */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
           <div className="bg-white p-4 rounded-lg shadow-md w-full">
-            <h2 className="text-xl font-semibold mb-2">Gasto Total</h2>
+            <h2 className="text-xl font-semibold mb-2">Gasto semanal</h2>
             <p className="text-2xl text-green-600">
-              {totalWeekExpense.toFixed(2)} €
+              {totalWeekExpense.toFixed(2)} € / {weeklyLimit} €
             </p>
           </div>
 
-          <div className="bg-white p-4 rounded-lg shadow-md w-full">
+          {/* <div className="bg-white p-4 rounded-lg shadow-md w-full">
             <h2 className="text-xl font-semibold mb-2"> Limite semanal </h2>
             <p className="text-2xl text-blue-600"> {weeklyLimit} € </p>
-          </div>
+          </div> */}
 
-          <div className="bg-white p-4 rounded-lg shadow-md w-full">
+          {/* <div className="bg-white p-4 rounded-lg shadow-md w-full">
             <h2 className="text-xl font-semibold mb-2"> Progreso </h2>
             <div className="w-full bg-gray-200 rounded h-2.5">
               <div
@@ -385,7 +390,7 @@ const ExpenseTrackerPage = () => {
                 style={{ width: `${progressPercentaje * 100}%` }}
               ></div>
             </div>
-          </div>
+          </div> */}
         </div>
         {/* Expense Table */}
         {expenses.length > 0 || newExpenseRow ? (
@@ -603,6 +608,12 @@ const ExpenseTrackerPage = () => {
             setCategories={setCategories}
           />
         )}
+
+        {isOpenNewExpense && 
+          <NewExpenseModal 
+            categories={categories} 
+            logedUserData={logedUserData}
+            />}
       </div>
     </div>
   );
