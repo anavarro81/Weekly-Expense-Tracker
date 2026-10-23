@@ -20,6 +20,8 @@ const LoginRegisterPage = () => {
 
   const [errors, setErrors] = useState({});
 
+  const [showPassword, setShowPassword] = useState(false);
+
   const { user, email, password } = userData;
 
   const { logedUserData, setLogedUserData } = useUser();
@@ -196,13 +198,22 @@ const LoginRegisterPage = () => {
             </div>
             <div>
               <label className="block text-sm font-medium">Contraseña</label>
-              <input
-                type="password"
-                placeholder="••••••••"
-                name="password"
-                onChange={handleUserData}
-                className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-300"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  name="password"
+                  onChange={handleUserData}
+                  className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-300 pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-2.5 text-gray-600 hover:text-gray-800 transition"
+                >
+                  {showPassword ? "👁️" : "👁️‍🗨️"}
+                </button>
+              </div>
             </div>
             <button
               onClick={handleSubmitForm}
