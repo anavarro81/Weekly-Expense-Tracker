@@ -326,6 +326,14 @@ const ExpenseTrackerPage = () => {
     navigate("/");
   };
 
+  const NextWeek = () => {
+    // Implementar lógica para pasar a la siguiente semana
+  };
+
+  const PreviousWeek = () => {
+    // Implementar lógica para pasar a la semana anterior
+  };
+
   return (
     <div className="min-h-scren bg-gray-50 p-6">
       <div className="max-w-6xl mx-auto">
@@ -380,6 +388,29 @@ const ExpenseTrackerPage = () => {
               ></div>
             </div>
           </div> */}
+        </div>
+
+        {/* Week Navigation Card */}
+        <div className="bg-white p-6 rounded-lg shadow-md mb-8">
+          <div className="flex items-center justify-between">
+            <button
+              onClick={PreviousWeek}
+              className="text-gray-400 hover:text-gray-600 transition"
+            >
+              <FiChevronLeft className="w-6 h-6" />
+            </button>
+            <div className="text-center">
+              <p className="text-lg font-semibold text-gray-700">
+                19 Oct - 25 Oct
+              </p>
+            </div>
+            <button
+              onClick={NextWeek}
+              className="text-gray-400 hover:text-gray-600 transition"
+            >
+              <FiChevronRight className="w-6 h-6" />
+            </button>
+          </div>
         </div>
         {/* Expense Table */}
         {expenses.length > 0 || newExpenseRow ? (
