@@ -19,8 +19,6 @@ import { useUser } from "../Providers/UserProvider";
 import NewExpenseModal from "./NewExpenseModal";
 
 const ExpenseTrackerPage = () => {
-  
-
   // Permite redirigir al salir de la app
   const navigate = useNavigate();
 
@@ -28,7 +26,7 @@ const ExpenseTrackerPage = () => {
 
   // Muestra | Oculta la ventana de configuración
   const [isOpenSettings, setIsOpenSettings] = useState(false);
-  const [isOpenNewExpense, setIsOpenNewExpense] = useState(true);
+  const [isOpenNewExpense, setIsOpenNewExpense] = useState(false);
 
   // Identifica el registro editardo por su id
   const [editExpenseId, setEditExpenseId] = useState(null);
@@ -210,10 +208,6 @@ const ExpenseTrackerPage = () => {
     setEditedExpense(null);
   };
 
-  const createNewExpense = () => {
-    setnewExpenseRow(!newExpenseRow);
-  };
-
   /* New Expense Functions */
 
   const editNewExpenseData = (e) => {
@@ -226,11 +220,7 @@ const ExpenseTrackerPage = () => {
   // ✔️  Button
   const addExpense = async () => {
     try {
-      
-
       const payload = { ...newExpesense, userId: logedUserData._id };
-
-      
 
       const validExpense = validateExpenseData(newExpesense);
 
@@ -276,11 +266,10 @@ const ExpenseTrackerPage = () => {
   // Format de MOngoDB date string as day of week and month
   const formatDate = (mongoDBString) => {
     const date = new Date(mongoDBString);
-    return date.toLocaleDateString("es-ES", {
-      weekday: "long",
-      month: "long",
-      day: "numeric",
-    });
+    const weekday = date.toLocaleDateString("es-ES", { weekday: "short" });
+    const formattedWeekday =
+      weekday.charAt(0).toUpperCase() + weekday.slice(1).replace(".", "");
+    return `${formattedWeekday}, ${date.getDate()}`;
   };
 
   const nextPage = async () => {
@@ -348,7 +337,7 @@ const ExpenseTrackerPage = () => {
             <button
               id="createExpenseBtn"
               className="bg-blue-500 rounded-full text-white cursor-pointer p-2"
-              onClick={() => createNewExpense()}
+              onClick={() => setIsOpenNewExpense(!isOpenNewExpense)}
             >
               <FiPlus className="w-8 h-8 cursor-pointer" />
             </button>
@@ -397,10 +386,10 @@ const ExpenseTrackerPage = () => {
           <table className="w-full bg-white rounded-lg shadow-md mt-8 text-left">
             <tbody className="bg-white divide-y divide-gray-200">
               <th className="px-6 py-3 "> Fecha </th>
-              <th> Concepto </th>
-              <th> Categoria </th>
+              <th> Concepto / Categoria </th>
+
               <th> Cantidad </th>
-              <th> Acciones </th>
+
               {/* Muestra la primera fila en modo edición para agregar el gasto. */}
               {newExpenseRow && (
                 <>
@@ -494,10 +483,13 @@ const ExpenseTrackerPage = () => {
                         />{" "}
                       </td>
                     ) : (
-                      <td> {expense.concept} </td>
+                      <td>
+                        {" "}
+                        {expense.concept} <br /> {expense.category}{" "}
+                      </td>
                     )}
 
-                    {editExpenseId == expense._id ? (
+                    {/* {editExpenseId == expense._id ? (
                       <td>
                         <select name="category" onChange={editExpendeData}>
                           {categories.map((category) => (
@@ -510,7 +502,7 @@ const ExpenseTrackerPage = () => {
                       </td>
                     ) : (
                       <td> {expense.category} </td>
-                    )}
+                    )} */}
 
                     {editExpenseId == expense._id ? (
                       <td>
@@ -527,7 +519,7 @@ const ExpenseTrackerPage = () => {
                       <td> {expense.amount} €</td>
                     )}
 
-                    <td className="">
+                    {/* <td className="">
                       <div className="flex space-x-2">
                         {editExpenseId != expense._id ? (
                           <>
@@ -563,7 +555,7 @@ const ExpenseTrackerPage = () => {
                           </>
                         )}
                       </div>
-                    </td>
+                    </td> */}
                   </tr>
                 ))}
             </tbody>
@@ -609,11 +601,13 @@ const ExpenseTrackerPage = () => {
           />
         )}
 
-        {isOpenNewExpense && 
-          <NewExpenseModal 
-            categories={categories} 
+        {isOpenNewExpense && (
+          <NewExpenseModal
+            categories={categories}
             logedUserData={logedUserData}
-            />}
+            setIsOpenNewExpense={setIsOpenNewExpense}
+          />
+        )}
       </div>
     </div>
   );

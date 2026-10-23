@@ -3,7 +3,7 @@ import { useState } from "react";
 import { axiosInstance } from "../util/axios";
 import { ToastContainer, toast } from "react-toastify";
 
-const NewExpenseModal = ({ categories, logedUserData }) => {
+const NewExpenseModal = ({ categories, logedUserData, setIsOpenNewExpense }) => {
   // Toast Notifications
   const showError = (message) => toast.error(message);
   const successNotification = (message) => toast.success(message);
@@ -77,7 +77,7 @@ const NewExpenseModal = ({ categories, logedUserData }) => {
     setError((prevError) => ({ ...prevError, [name]: error ? error : "" }));
   };
 
-  const isValidExpense = () => {};
+  const isValidExpense = () => { };
 
   const saveExpense = async () => {
     const token = localStorage.getItem("authToken");
